@@ -13,6 +13,8 @@
   --accent: lightsteelblue;
 
   --shadow: 0 0 0.5rem var(--black050);
+
+  --gamefield-size: 20rem;
 }
 
 * {
@@ -68,18 +70,18 @@ body {
   }
   > main {
     width: clamp(300px, 100%, 900px);
+    display: flex;
+    justify-content: space-between;
   }
   > footer {
     width: 100vw;
   }
 }
 
-/* .hero {
-    display: grid;
-    grid-template-areas: "hero";
-    height: 60vh;
-    place-items: center;
-    >img {
-      height: 60vh;
-    }
-  } */
+.gameboard {
+  width: var(--gamefield-size);
+  height: var(--gamefield-size);
+
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+}
