@@ -1,7 +1,6 @@
 {
   "name": "git-template",
   "version": "1.0.0",
-  "type": "module",
   "main": "webpack.common.js",
   "scripts": {
     "test": "jest",

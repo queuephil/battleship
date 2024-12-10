@@ -1,8 +1,3 @@
-// 1	carrier	    5
-// 2	battleship	4
-// 3	destroyer	3
-// 4	submarine	3
-// 5	patrolBoat	2
 function ship(name, length) {
   return {
     name: name,
@@ -21,7 +16,6 @@ function ship(name, length) {
   }
 }
 
-// 10x10
 function gameboard() {
   function createCoordinates(size) {
     let array = []
@@ -36,21 +30,48 @@ function gameboard() {
     coordinates: createCoordinates(10),
     placedShips: [],
     placeShip(ship, [x, y]) {
+      if (this.checkAlreadyPlaced(ship, [x, y]) == false) return false
+
       for (let i = 0; i < ship.length; i++) {
         this.placedShips.push(x + i, y, ship)
       }
+
       return this
     },
-    missedAttacks: [],
+    checkAlreadyPlaced(ship, [x, y]) {
+      if (x + parseInt(ship.length) > 10) return false
+
+      const xArray = []
+      for (let i = 0; i < ship.length; i++) xArray.push(x + i)
+      if (
+        this.placedShips.some((_, index, array) => {
+          return xArray.some((value) => {
+            return array[index] == value && array[index + 1] == y
+          })
+        })
+      ) {
+        return false
+      }
+    },
+    attacks: [],
     receiveAttack([x, y]) {
+      if (this.checkAlreadyAttacked([x, y]) == true) return false
+
       const hitShip = this.placedShips.reduce((previous, _, index, array) => {
         if (previous) return previous
         if (array[index] == x && array[index + 1] == y) return array[index + 2]
         return null
       }, null)
-      hitShip !== null ? hitShip.hitFn() : this.missedAttacks.push([x, y])
+      hitShip !== null
+        ? (hitShip.hitFn(), this.attacks.push(x, y, 'hit'))
+        : this.attacks.push(x, y, 'missed')
       this.checkGameCondition()
       return this
+    },
+    checkAlreadyAttacked([x, y]) {
+      return this.attacks.some((_, index, array) => {
+        return array[index] == x && array[index + 1] == y
+      })
     },
     allSunk: false,
     checkGameCondition() {
@@ -63,9 +84,9 @@ function gameboard() {
   }
 }
 
-function player() {
+function player(name) {
   return {
-    type: '',
+    name,
     gameboard: gameboard(),
   }
 }
